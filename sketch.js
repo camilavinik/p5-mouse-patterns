@@ -7,7 +7,7 @@
 var balls;
 ///////////////////////////////////////////////
 function setup() {
-  createCanvas(900,600);
+  createCanvas(900, 600);
   background(0);
   balls = [];
   for (var i = 0; i < 100; i++) {
@@ -16,41 +16,46 @@ function setup() {
 }
 ////////////////////////////////////////////////
 function draw() {
-  for (var i = 0; i < balls.length; i++) {
-    balls[i].run();
+  if (mouseX > 0 || mouseY > 0) {
+    for (var i = 0; i < balls.length; i++) {
+      balls[i].run();
+    }
   }
 }
 ///////////////////////////////////////////////
 class Ball {
 
-  constructor(){
+  constructor() {
     this.velocity = new createVector(0, 0);
     this.acceleration = new createVector(0, 0);
-    this.maxVelocity = 5;
+    this.maxVelocity = random(4, 6);
 
-    var randomX = width/2+random(-100,100);
-    var randomY = height/2+random(-100,100);
+    var randomX = mouseX + random(-80, 80);
+    var randomY = mouseY + random(-80, 80);
     this.location = new createVector(randomX, randomY);
     this.prevLocation = new createVector(randomX, randomY);
+
+    this.randomFactor = random(0.3, 0.4);
+    this.randomColor = new createVector(random(255), random(255), random(255));
   }
 
-  run(){
+  run() {
     this.draw();
     this.move();
   }
 
-  draw(){
-    stroke(255);
-    strokeWeight(0.1);
+  draw() {
+    stroke(this.randomColor.x, this.randomColor.y, this.randomColor.z);
+    strokeWeight(.2);
     line(this.prevLocation.x, this.prevLocation.y, this.location.x, this.location.y);
     this.prevLocation = this.location.copy();
   }
 
-  move(){
+  move() {
     var mouse = createVector(mouseX, mouseY);
     var dir = p5.Vector.sub(mouse, this.location);
     dir.normalize();
-    dir.mult(0.3);
+    dir.mult(this.randomFactor);
     this.acceleration = dir;
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.maxVelocity);
